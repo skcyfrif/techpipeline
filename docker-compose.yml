@@ -11,7 +11,7 @@ services:
     ports:
       - "2002:2002"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://tech-mysql-db:3302/CyfrifProTech  # ✅ Ensure the correct MySQL container port
+      - SPRING_DATASOURCE_URL=jdbc:mysql://tech-mysql-db:3306/CyfrifProTech  # ✅ Ensure the correct MySQL container port
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
     depends_on:
@@ -25,6 +25,6 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: CyfrifProTech
     ports:
-      - "3302:3302"  # ✅ Use the correct MySQL container port
+      - "3302:3306"  # ✅ Use the correct MySQL container port
     networks:
       - tech-network  # ✅ Attach to the network
