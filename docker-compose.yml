@@ -2,7 +2,7 @@ version: '3.8'  # ✅ Define the Compose version
 
 networks:
   tech-network:
-    driver: bridge  # ✅ Define a custom network
+    driver: bridge  # ✅ Define a custom network is
 
 services:
   springboot-app:
