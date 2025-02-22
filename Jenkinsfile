@@ -64,8 +64,11 @@ pipeline {
                     echo "Waiting for MySQL to be ready..."
                     sh """
                         for i in {1..30}; do
-                            docker exec tech-mysql-db mysqladmin ping -h localhost --silent && break
-                            echo 'Waiting for MySQL...'
+                            if docker exec techpipeline-tech-mysql-db-1 mysqladmin ping -h localhost --silent; then
+                                echo "MySQL is ready!"
+                                break
+                            fi
+                            echo "Waiting for MySQL... ($i/30)"
                             sleep 5
                         done
                     """
