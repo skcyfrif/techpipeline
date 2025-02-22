@@ -60,23 +60,36 @@ pipeline {
                     echo "Starting services..."
                     sh 'docker-compose -f docker-compose.yml up -d'
 
-                    // Optional: Wait for MySQL to be ready before proceeding
+                    // Dynamically get the running MySQL container name
+                    def mysqlContainer = sh(script: "docker ps --filter 'ancestor=mysql:8' --format '{{.Names}}' | grep 'tech-mysql-db'", returnStdout: true).trim()
+
+                    echo "MySQL container detected: ${mysqlContainer}"
+
+                    // Wait for MySQL to be ready
                     echo "Waiting for MySQL to be ready..."
-                    sh '''
+                    sh """
                         count=0
-                        while [ $count -lt 30 ]; do
-                            if docker exec techpipeline-tech-mysql-db-1 mysqladmin ping -h localhost --silent; then
+                        while [ \$count -lt 30 ]; do
+                            if docker exec ${mysqlContainer} mysqladmin ping -h localhost --silent; then
                                 echo "MySQL is ready!"
                                 exit 0
                             fi
-                            echo "Waiting for MySQL... ($count/30)"
+                            echo "Waiting for MySQL... (\$count/30)"
                             sleep 5
-                            count=$((count+1))
+                            count=\$((count+1))
                         done
                         echo "MySQL did not start in time."
                         exit 1
-                    '''
+                    """
 
+                    // Grant MySQL privileges dynamically
+                    echo "Granting MySQL privileges..."
+                    sh """
+                        docker exec -i ${mysqlContainer} mysql -u root -proot <<EOF
+                        GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+                        FLUSH PRIVILEGES;
+                        EOF
+                    """
                 }
             }
         }
