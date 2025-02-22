@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Application</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f3f4f6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    header {
+      background: #4caf50;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      animation: slideDown 1s ease-in;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      width: 50%;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      animation: zoomIn 0.7s ease-in;
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea,
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      background: #4caf50;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .response-message {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #4caf50;
+      color: #fff;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      animation: fadeIn 1.5s ease-in;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Job Application
+  </header>
+
+  <div class="container">
+    <form id="jobApplicationForm" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="fullName">Your Name</label>
+        <input
+          name="fullName"
+          placeholder="Enter your full name"
+          id="fullName"
+          type="text"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          name="email"
+          placeholder="Enter your email id"
+          id="email"
+          type="email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input
+          name="phone"
+          placeholder="Enter your phone number"
+          id="phone"
+          type="tel"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="message">Tell Us More About Yourself</label>
+        <textarea
+          name="message"
+          id="message"
+          placeholder="Let us know you better..."
+          rows="4"
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="cv">Your CV</label>
+        <input
+          name="cv"
+          id="cv"
+          type="file"
+          accept=".pdf,.doc,.docx"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <button type="submit">Apply</button>
+        <button type="button" onclick="window.location.href='index.html'">Return to Home page</button>
+      </div>
+    </form>
+
+    <div id="responseMessage" class="response-message"></div>
+  </div>
+
+  <footer>
+    &copy; 2025 Cyfrif Pro Tech. All rights reserved.
+  </footer>
+  <script src="assets/js/config.js"></script>
+  <script>
+    // Use the BASE_URL from config.js
+    const BASE_URL = config.BASE_URL;
+    document.getElementById('jobApplicationForm').addEventListener('submit', async (event) => {
+      event.preventDefault(); // Prevent default form submission
+
+      const form = event.target;
+      const formData = new FormData(form);
+      const responseMessage = document.getElementById('responseMessage');
+      const fileInput = document.getElementById('cv');
+      const file = fileInput.files[0];
+
+      // Client-side file size validation (2 MB limit)
+      const maxFileSize = 2 * 1024 * 1024; // 2 MB in bytes
+      if (file && file.size > maxFileSize) {
+        responseMessage.innerHTML = `<span style="color: red;">Error: File size exceeds 2 MB. Please upload a smaller file.</span>`;
+        return;
+      }
+
+      try {
+        const response = await fetch(`${BASE_URL}/job-applications/upload`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          responseMessage.innerHTML = `<span style="color: green;">Thank you! Your application has been submitted successfully.</span>`;
+          form.reset(); // Reset the form
+        } else if (response.status === 409) {
+          const errorData = await response.json();
+          responseMessage.innerHTML = `<span style="color: red;">Error: ${errorData.message}</span>`;
+        } else {
+          responseMessage.innerHTML = `<span style="color: red;">Unexpected error occurred. Please try again later.</span>`;
+        }
+      } catch (error) {
+        responseMessage.innerHTML = `<span style="color: red;">${error.message}</span>`;
+      }
+    });
+  </script>
+</body>
+</html>
