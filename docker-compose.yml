@@ -1,4 +1,4 @@
-version: '3.8'  # ✅ Define the Compose version
+version: '3.8'  # ✅ Define theeeee Compose version
 
 networks:
   tech-network:
