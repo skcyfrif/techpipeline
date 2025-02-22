@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = 'tech:latest' // Define your Docker image name
-        MYSQL_HOST = 'tech-mysql-db'  // MySQL service name in docker-compose
+        MYSQL_HOST = 'tech-mysql-db'  // MySQL service name in docker-compose file
     }
 
     stages {
