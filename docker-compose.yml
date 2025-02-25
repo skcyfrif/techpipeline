@@ -31,7 +31,7 @@ services:
       - "3302:3306"  # Expose MySQL externally on port 3302
     volumes:
       - mysql_data:/var/lib/mysql  # Persist MySQL data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Initialize MySQL privileges
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Ensure file exists
     networks:
       - tech-network
     healthcheck:
@@ -40,7 +40,7 @@ services:
       retries: 5
       timeout: 5s
 
-    nginx:
+  nginx:
     image: nginx:latest
     container_name: tech-nginx
     restart: always
@@ -48,7 +48,7 @@ services:
       - "83:83"
       - "7443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Ensure it's a file, NOT a directory
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Ensure this is a file
       - ./nginx/conf.d:/etc/nginx/conf.d:ro  # Mount directory separately
       - /etc/letsencrypt:/etc/letsencrypt
       - ./html:/usr/share/nginx/html
@@ -56,7 +56,6 @@ services:
       - springboot-app
     networks:
       - tech-network
-
 
 volumes:
   mysql_data:  # Define volume for MySQL persistence
