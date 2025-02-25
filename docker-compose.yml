@@ -1,0 +1,30 @@
+version: '3.8'  # ✅ Define theeeee Compose version
+
+networks:
+  tech-network:
+    driver: bridge  # ✅ Define a custom network is
+
+services:
+  springboot-app:
+    image: tech:latest  # ✅ Use the correct built Docker image for testing
+    build: .
+    ports:
+      - "2002:2002"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://tech-mysql-db:3306/CyfrifProTech  # ✅ Ensure the correct MySQL container port
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - tech-mysql-db
+    networks:
+      - tech-network  # ✅ Attach to the network
+
+  tech-mysql-db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: CyfrifProTech
+    ports:
+      - "3302:3306"  # ✅ Use the correct MySQL container port
+    networks:
+      - tech-network  # ✅ Attach to the network
