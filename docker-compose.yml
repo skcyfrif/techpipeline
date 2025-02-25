@@ -2,21 +2,21 @@ version: '3.8'
 
 networks:
   tech-network:
-    driver: bridge  # Custom network for all services
+    driver: bridge
 
 services:
   springboot-app:
-    image: tech:latest  # Use the built Spring Boot Docker image
+    image: tech:latest
     build: .
     ports:
-      - "2002:2002"  # Exposing internal Spring Boot port
+      - "2002:2002"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://tech-mysql-db:3306/CyfrifProTech
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
     depends_on:
       tech-mysql-db:
-        condition: service_healthy  # Ensure MySQL is ready before starting app
+        condition: service_healthy
     networks:
       - tech-network
 
@@ -28,10 +28,10 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: CyfrifProTech
     ports:
-      - "3302:3306"  # Expose MySQL externally on port 3302
+      - "3302:3306"
     volumes:
-      - mysql_data:/var/lib/mysql  # Persist MySQL data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Ensure file exists
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - tech-network
     healthcheck:
@@ -46,16 +46,26 @@ services:
     restart: always
     ports:
       - "83:83"
-      - "7443:443"
+      - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Ensure this is a file
-      - ./nginx/conf.d:/etc/nginx/conf.d  # Mount directory separately
-      - /etc/letsencrypt:/etc/letsencrypt
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt  # Mount SSL certificates
       - ./html:/usr/share/nginx/html
     depends_on:
       - springboot-app
     networks:
       - tech-network
 
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/html --quiet; sleep 12h & wait $${!}; done'"
+    networks:
+      - tech-network
+
 volumes:
-  mysql_data:  # Define volume for MySQL persistence
+  mysql_data:
