@@ -48,7 +48,7 @@ services:
       - "83:83"   # Expose HTTP on port 83
       - "7443:443" # Expose HTTPS
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro   # Nginx configuration
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro   # Nginx configuration
       - /etc/letsencrypt:/etc/letsencrypt       # SSL certificates (ensure they exist)
       - ./html:/usr/share/nginx/html            # Static files
     depends_on:
