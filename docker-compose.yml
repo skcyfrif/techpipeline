@@ -40,23 +40,23 @@ services:
       retries: 5
       timeout: 5s
 
-  nginx:
+    nginx:
     image: nginx:latest
     container_name: tech-nginx
     restart: always
     ports:
-      - "83:83"   # Expose HTTP on port 83
-      - "7443:443" # Expose HTTPS
+      - "83:83"
+      - "7443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro   # Mount main config
-      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro  # Site config
-      - /etc/letsencrypt:/etc/letsencrypt  # SSL certificates
-      - ./html:/usr/share/nginx/html  # Static files
-
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Ensure it's a file, NOT a directory
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro  # Mount directory separately
+      - /etc/letsencrypt:/etc/letsencrypt
+      - ./html:/usr/share/nginx/html
     depends_on:
       - springboot-app
     networks:
       - tech-network
+
 
 volumes:
   mysql_data:  # Define volume for MySQL persistence
