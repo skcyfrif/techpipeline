@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'tech:latest' // Docker image name
+        DOCKER_IMAGE = 'tech:latest' // Docker image namee
         MYSQL_HOST = 'tech-mysql-db' // MySQL service name in docker-compose file
     }
 
