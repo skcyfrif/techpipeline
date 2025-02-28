@@ -9,7 +9,7 @@ services:
     image: tech:latest
     build: .
     ports:
-      - "6443:2002"
+      - "1443:2002"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://tech-mysql-db:3306/CyfrifProTech
       SPRING_DATASOURCE_USERNAME: root
