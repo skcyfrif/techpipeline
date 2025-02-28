@@ -14,6 +14,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://tech-mysql-db:3306/CyfrifProTech
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      volumes:
+      - ./keystore.p12:/tech/keystore.p12
     depends_on:
       tech-mysql-db:
         condition: service_healthy
