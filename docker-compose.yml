@@ -14,8 +14,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://tech-mysql-db:3306/CyfrifProTech
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-      volumes:
-      - ./keystore.p12:/tech/keystore.p12
+    volumes:
+      - ./keystore.p12:/tech/keystore.p12  # Moved outside environment
     depends_on:
       tech-mysql-db:
         condition: service_healthy
@@ -41,40 +41,6 @@ services:
       interval: 10s
       retries: 5
       timeout: 5s
-
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: tech-nginx
-  #   restart: always
-  #   ports:
-  #     - "83:83"
-  #     - "8443:443"
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-  #     - ./nginx/conf.d:/etc/nginx/conf.d
-  #     - /etc/letsencrypt:/etc/letsencrypt  # Mount SSL certificate
-  #     - /var/www/html:/var/www/html  # Webroot for Certbot
-  #   depends_on:
-  #     - springboot-app
-  #   networks:
-  #     - tech-network
-
-  # certbot:
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   restart: always
-  #   volumes:
-  #     - /etc/letsencrypt:/etc/letsencrypt
-  #     - /var/lib/letsencrypt:/var/lib/letsencrypt
-  #     - /var/www/html:/var/www/html  # Webroot for Certbot
-  #   entrypoint: >
-  #     /bin/sh -c "trap exit TERM;
-  #     while :; do
-  #       certbot certonly --webroot -w /var/www/html --email subratdev00@email.com --agree-tos --no-eff-email -d cyfrifprotech.com -d www.cyfrifprotech.com;
-  #       sleep 12h & wait $${!};
-  #     done"
-    # networks:
-    #   - tech-network
 
 volumes:
   mysql_data:
