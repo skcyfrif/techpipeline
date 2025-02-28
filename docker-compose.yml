@@ -1,9 +1,5 @@
 version: '3.8'
 
-networks:
-  tech-network:
-    driver: bridge
-
 services:
   springboot-app:
     image: tech:latest
@@ -14,11 +10,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://tech-mysql-db:3306/CyfrifProTech
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-    volumes:
-      - ./keystore.p12:/tech/keystore.p12  # Moved outside environment
     depends_on:
-      tech-mysql-db:
-        condition: service_healthy
+      - tech-mysql-db
     networks:
       - tech-network
 
@@ -36,11 +29,9 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - tech-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      retries: 5
-      timeout: 5s
 
 volumes:
   mysql_data:
+
+networks:
+  tech-network:
