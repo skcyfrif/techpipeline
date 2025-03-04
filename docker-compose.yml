@@ -10,16 +10,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://tech-mysql-db:3306/CyfrifProTech
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-      # Add Spring Boot SSL configuration if needed
-      SPRING_SSL_KEY_STORE: "file:/etc/letsencrypt/cyfrifprotech.com.p12"
-      SPRING_SSL_KEY_STORE_PASSWORD: cyfrif@#123
-      SPRING_SSL_KEY_STORE_TYPE: PKCS12
     depends_on:
       - tech-mysql-db
     networks:
       - tech-network
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt:ro  # Mount the host's Let's Encrypt folder as read-only
 
   tech-mysql-db:
     image: mysql:8
