@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'tech:latest' // Docker image name
+        DOCKER_IMAGE = 'tech:latest' // Docker image namee
         MYSQL_HOST = 'tech-mysql-db' // MySQL service name in docker-compose file
     }
 
@@ -59,24 +59,6 @@ pipeline {
                     sh 'docker network ls | grep -w tech-network || docker network create tech-network'
                     echo "Starting services..."
                     sh 'docker-compose -f docker-compose.yml up -d'
-
-                    // // Optional: Wait for MySQL to be ready before proceeding
-                    // echo "Waiting for MySQL to be ready..."
-                    // sh '''
-                    //     count=0
-                    //     while [ $count -lt 30 ]; do
-                    //         if docker exec techpipeline-tech-mysql-db-1 mysqladmin ping -h localhost --silent; then
-                    //             echo "MySQL is ready!"
-                    //             exit 0
-                    //         fi
-                    //         echo "Waiting for MySQL... ($count/30)"
-                    //         sleep 5
-                    //         count=$((count+1))
-                    //     done
-                    //     echo "MySQL did not start in time."
-                    //     exit 1
-                    // '''
-
                 }
             }
         }

@@ -1,22 +1,17 @@
-version: '3.8'  # Define the Docker Compose version
-
-networks:
-  tech-network:
-    driver: bridge  # Create a custom bridge network
+version: '3.8'
 
 services:
   springboot-app:
-    image: tech:latest  # Use the correct built Docker image
+    image: tech:latest
     build: .
     ports:
-      - "2002:2002"  # Map the application port correctly
+      - "8443:8443"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://tech-mysql-db:3306/CyfrifProTech
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
     depends_on:
-      tech-mysql-db:
-        condition: service_healthy  # Ensure MySQL is ready before starting app
+      - tech-mysql-db
     networks:
       - tech-network
 
@@ -28,17 +23,15 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: CyfrifProTech
     ports:
-      - "3302:3306"  # Expose MySQL externally on port 3302, but use 3306 inside
+      - "3302:3306"
     volumes:
-      - mysql_data:/var/lib/mysql  # Persist MySQL data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Initialize MySQL privileges
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - tech-network
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      retries: 5
-      timeout: 5s
 
 volumes:
-  mysql_data:  # Define volume for MySQL persistence
+  mysql_data:
+
+networks:
+  tech-network:
