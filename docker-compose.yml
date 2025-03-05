@@ -35,7 +35,7 @@ services:
     container_name: nginx
     ports:
       - "83:80"
-      - "8443:443"
+      - "1443:443"
     volumes:
       - ./nginx/cyfrifprotech.com.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/certificates:/etc/letsencrypt
